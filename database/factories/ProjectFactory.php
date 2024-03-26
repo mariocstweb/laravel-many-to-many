@@ -36,7 +36,7 @@ class ProjectFactory extends Factory
             'type_id' => Arr::random($type_ids),
             'content' => fake()->paragraph(15, true),
             'image' => $img_url,
-            'programming_language' => fake()->randomElement(['HTML', 'CSS', 'JS', 'PHP']),
+            // 'programming_language' => fake()->randomElement(['HTML', 'CSS', 'JS', 'PHP']),
         ];
     }
 }

@@ -7,10 +7,15 @@
     <img src="{{asset('storage/' . $project->image)}}" class="card-img-top p-3" alt="...">
     <div class="card-body">
       <h5 class="card-title me-3">{{$project->title}}<span class="badge text-bg-secondary" style="{{$project->type ? $project->type->color : ''}}">{{$project->type? $project->type->label : ''}}</span></h5>
+      @forelse ($project->technologies as $technology)
+      <span class="badge rounded-pill text-bg-{{$technology->color}}">{{$technology->label}}</span>
+      @empty
+        <span>Nessuno</span>
+      @endforelse
       <p class="card-text">{{$project->content}}</p>
-      <p class="card-text">
+      {{-- <p class="card-text">
         <strong>Linguaggio usato: </strong>{{$project->programming_language}}
-      </p>
+      </p> --}}
       <div>
         <p><strong>Creato: </strong>{{$project->created_at}}</p>
         <p><strong>Modificato: </strong>{{$project->updated_at}}</p>

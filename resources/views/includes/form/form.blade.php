@@ -22,12 +22,12 @@
         <input type="text" class="form-control" placeholder="Insert title" name="title" value="{{old('title', $project->title)}}">
       </div>
     </div>
-    <div class="col-4">
+    {{-- <div class="col-4">
       <div class="mb-3">
         <label for="exampleFormControlInput1" class="form-label">Linguaggio</label>
         <input type="text" class="form-control" placeholder="Insert title" name="programming_language" value="{{old('programming_language', $project->programming_language)}}">
       </div>
-    </div>
+    </div> --}}
     <div class="col-4">
       <div class="mb-3">
         <label for="exampleFormControlInput1" class="form-label">Categoria</label>
@@ -50,6 +50,16 @@
       <div class="mb-3">
         <label for="exampleFormControlInput1" class="form-label">Content</label>
         <input type="text" class="form-control" placeholder="Insert title" name="content" value="{{old('content', $project->content)}}">
+      </div>
+    </div>
+    <div class="col-12">
+      <div class="mb-3">
+        @foreach ($technologies as $technology)
+        <div class="form-check form-check-inline" id="form-check">
+            <input class="form-check-input" type="checkbox" name="technologies[]" id="{{ "technology-$technology->id" }}" value="{{ $technology->id}}" @if (in_array($technology->id, old('technologies', []))) checked @endif>
+            <label for="title" class="form-label">{{ $technology->label }}</label>
+        </div>
+        @endforeach
       </div>
     </div>
     <div class="d-flex justify-content-center p-3">

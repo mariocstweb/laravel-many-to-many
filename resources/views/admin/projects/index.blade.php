@@ -36,7 +36,14 @@
       <td>{{$project->content}}</td>
       <td>{{$project->created_at}}</td>
       <td>{{$project->updated_at}}</td>
-      <td>{{$project->programming_language}}</td>
+      <td>
+        @forelse ($project->technologies as $technology)
+        <span class="badge rounded-pill text-bg-{{$technology->color}}">{{$technology->label}}</span>
+        @empty
+          <span>Nessuno</span>
+        @endforelse
+
+      </td>
       <td>{{$project->type? $project->type->label : ''}}</td>
 
       <td>

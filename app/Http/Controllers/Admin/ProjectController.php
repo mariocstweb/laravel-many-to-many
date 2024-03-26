@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Project;
+use App\Models\Technology;
 use App\Models\Type;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -29,7 +30,8 @@ class ProjectController extends Controller
     {
         $project = new Project();
         $types = Type::select('label', 'id')->get();
-        return view('admin.projects.create', compact('project', 'types'));
+        $technologies = Technology::select('label', 'id')->get();
+        return view('admin.projects.create', compact('project', 'types', 'technologies'));
     }
 
     /**
@@ -39,10 +41,12 @@ class ProjectController extends Controller
     {
         $request->validate([
             'title' => 'required|string|max:255',
-            'programming_language' => 'required|string|max:255',
+            // 'programming_language' => 'required|string|max:255',
             'image' => 'nullable',
             'content' => 'required|string',
-            'type_id' => 'nullable|exists:types,id'
+            'type_id' => 'nullable|exists:types,id',
+            'technologies' => 'nullable|exists:technologies,id',
+
         ]);
 
         $data = $request->all();
@@ -56,6 +60,10 @@ class ProjectController extends Controller
         }
 
         $project->save();
+
+        if (Arr::exists($data, 'technologies')) {
+            $project->technologies()->attach($data['technologies']);
+        }
 
         return to_route('admin.projects.show', $project)
             ->with('type', 'success')
