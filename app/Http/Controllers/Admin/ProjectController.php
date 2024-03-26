@@ -84,9 +84,10 @@ class ProjectController extends Controller
     public function edit(Project $project)
 
     {
-
+        $prev_tags = $project->technologies->pluck('id')->toArray();
+        $technologies = Technology::select('label', 'id')->get();
         $types = Type::select('label', 'id')->get();
-        return view('admin.projects.edit', compact('project', 'types'));
+        return view('admin.projects.edit', compact('project', 'types', 'technologies', 'prev_tags'));
     }
 
     /**
@@ -97,8 +98,10 @@ class ProjectController extends Controller
         $request->validate([
             'title' => ['required', 'string', Rule::unique('projects')->ignore($project->id)],
             'image' => 'nullable',
-            'programming_language' => 'required|string|max:255',
-            'content' => 'required|string'
+            // 'programming_language' => 'required|string|max:255',
+            'content' => 'required|string',
+            'technologies' => 'nullable|exists:technologies,id',
+
         ]);
 
         $data = $request->all();
@@ -110,6 +113,9 @@ class ProjectController extends Controller
         }
 
         $project->update($data);
+        if (Arr::exists($data, 'technologies')) $project->technologies()->sync($data['technologies']);
+        elseif (!Arr::exists($data, 'technologies') && count($project->technologies)) $project->technologies()->detach();
+
 
 
         return to_route('admin.projects.show', $project->id)
@@ -149,6 +155,7 @@ class ProjectController extends Controller
 
     public function drop(Project $project)
     {
+        if ($project->has('technologies')) $project->technologies()->detach();
         if ($project->image) Storage::delete($project->image);
         $project->forceDelete();
         return to_route('admin.projects.trash')
